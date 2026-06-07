@@ -1,0 +1,23 @@
+# Use official Python base image
+FROM python:3.10-slim
+
+# Set working directory inside the container
+WORKDIR /app
+
+# Copy dependency file first (for Docker layer caching)
+COPY requirements.txt .
+
+# Install all dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire project into the container
+COPY . .
+
+# Create folders that the app needs at runtime
+RUN mkdir -p models logs
+
+# Expose port 8000 for the FastAPI server
+EXPOSE 8000
+
+# Command to start the server
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"] 
